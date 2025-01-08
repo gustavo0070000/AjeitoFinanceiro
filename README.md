@@ -21,8 +21,8 @@ Before you begin, ensure you have the following installed:
 
 1. **Clone the repository:**
     ```bash
-    git clone <https://github.com/gustavo0070000/AjeitoFinanceiro.git
-    cd <your_repository_directory>
+    git clone https://github.com/gustavo0070000/AjeitoFinanceiro.git
+    cd AjeitoFinanceiro
     ```
 
 2. **Navigate to the backend directory (if applicable):** The Python Flask app is likely in the root directory based on the provided files.
@@ -38,7 +38,6 @@ Before you begin, ensure you have the following installed:
     ```bash
     pip install -r requirements.txt
     ```
-    *(If you don't have a `requirements.txt`, you can create one by running `pip freeze > requirements.txt` after installing the necessary packages: `flask`, `flask-cors`, `requests`, `python-dotenv`, `google-generativeai`)*
 
 5. **Set up environment variables:**
     *   Create a `.env` file in the same directory as `Ajeito-Financeiro_flask.py`.
@@ -100,6 +99,8 @@ The application displays transactions for each connected account in separate tab
 *   **Cartão de crédito Santander:** Transactions from account associated with `account_number = '4'`.
 *   **Extrato Santander:** Transactions from account associated with `account_number = '5'`.
 
+You can change this to the account you connected on the app.js file
+
 Each transaction table includes the following information:
 
 *   **Data:** The date of the transaction.
@@ -145,7 +146,7 @@ You can toggle the visibility of each account's transactions by clicking the "Tr
 
 ## Further Development
 
-This application can be further enhanced with features like:
+TODO:
 
 *   More detailed filtering and sorting of transactions.
 *   Customizable expense categories.
@@ -155,4 +156,4 @@ This application can be further enhanced with features like:
 
 ## Contributing
 
-Contributions to Ajeito-Financeiro are welcome! Feel free to fork the repository, make your changes, and submit a pull request. You can also join the discussion on the Pluggy Discord server: [https://discord.gg/EanrwJADby](https://discord.gg/EanrwJADby).
+Contributions to Ajeito-Financeiro are welcome! Feel free to fork the repository, make your changes, and submit a pull request.
