@@ -1,11 +1,11 @@
 # AjeitoFinanceiro
-# EasyFinance: Your Personal Finance Analyzer Powered by AI
+# Ajeito-Financeiro: Your Personal Finance Analyzer Powered by AI
 
-EasyFinance is a web application that helps you understand your financial transactions by fetching data from different bank accounts connected via Pluggy and analyzing them using Google's Gemini AI. It provides insights into your spending habits, categorizes your expenses, identifies recurring payments, and suggests potential savings.
+Ajeito-Financeiro is a web application that helps you understand your financial transactions by fetching data from different bank accounts connected via Pluggy and analyzing them using Google's Gemini AI. It provides insights into your spending habits, categorizes your expenses, identifies recurring payments, and suggests potential savings.
 
 ## Getting Started
 
-This guide will walk you through setting up and using EasyFinance.
+This guide will walk you through setting up and using Ajeito-Financeiro.
 
 ### Prerequisites
 
@@ -41,7 +41,7 @@ Before you begin, ensure you have the following installed:
     *(If you don't have a `requirements.txt`, you can create one by running `pip freeze > requirements.txt` after installing the necessary packages: `flask`, `flask-cors`, `requests`, `python-dotenv`, `google-generativeai`)*
 
 5. **Set up environment variables:**
-    *   Create a `.env` file in the same directory as `EasyFinance_flask.py`.
+    *   Create a `.env` file in the same directory as `Ajeito-Financeiro_flask.py`.
     *   Add your Google Gemini API key, Pluggy Client ID, and Pluggy Client Secret to the `.env` file:
         ```env
         GOOGLE_API_KEY="YOUR_GOOGLE_GEMINI_API_KEY"
@@ -52,7 +52,7 @@ Before you begin, ensure you have the following installed:
 
 6. **Run the Flask application:**
     ```bash
-    python EasyFinance_flask.py
+    python Ajeito-Financeiro_flask.py
     ```
     The backend server should start running on `http://127.0.0.1:5000/`.
 
@@ -80,9 +80,9 @@ Before the application can fetch your transactions, you need to connect your ban
 
 **Important:** Ensure that the `CLIENT_ID` and `CLIENT_SECRET` in your `.env` file match the credentials of your development application in the Pluggy Dashboard.
 
-## Using EasyFinance
+## Using Ajeito-Financeiro
 
-Once both the backend and frontend are running, you can interact with EasyFinance through your web browser.
+Once both the backend and frontend are running, you can interact with Ajeito-Financeiro through your web browser.
 
 ### 1. Selecting the Time Range
 
@@ -130,7 +130,7 @@ You can toggle the visibility of each account's transactions by clicking the "Tr
 
 ## Code Structure
 
-*   **`EasyFinance_flask.py`:** This file contains the Flask backend application. It handles:
+*   **`Ajeito-Financeiro_flask.py`:** This file contains the Flask backend application. It handles:
     *   Fetching transactions from the Pluggy API.
     *   Receiving requests from the frontend to analyze transactions and suggest savings.
     *   Interacting with the Google Gemini AI API.
@@ -155,4 +155,4 @@ This application can be further enhanced with features like:
 
 ## Contributing
 
-Contributions to EasyFinance are welcome! Feel free to fork the repository, make your changes, and submit a pull request. You can also join the discussion on the Pluggy Discord server: [https://discord.gg/EanrwJADby](https://discord.gg/EanrwJADby).
+Contributions to Ajeito-Financeiro are welcome! Feel free to fork the repository, make your changes, and submit a pull request. You can also join the discussion on the Pluggy Discord server: [https://discord.gg/EanrwJADby](https://discord.gg/EanrwJADby).
