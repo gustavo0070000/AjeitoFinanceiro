@@ -1,4 +1,3 @@
-
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import requests
@@ -15,9 +14,9 @@ genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
 app = Flask(__name__)
 CORS(app)
 
-# Replace with your actual client ID and secret
-CLIENT_ID = "YOUR_PLUGGY_CLIENT_ID"
-CLIENT_SECRET = "YOUR_PLUGGY_CLIENT_SECRET"
+# Replace with your actual Pluggy client ID and secret
+CLIENT_ID = " "
+CLIENT_SECRET = " "
 
 def get_api_key():
     url = "https://api.pluggy.ai/auth"
@@ -66,17 +65,16 @@ def transactions(account_number):
     months = int(months_str)
 
     api_key = get_api_key()
-    # Replace with your actual account IDs or a secure way to map account numbers to IDs
     if account_number == '1':
-        account_id = "YOUR_ACCOUNT_ID_1"
+        account_id = "Account_ID" #replace with your actual accountId
     elif account_number == '2':
-        account_id = "YOUR_ACCOUNT_ID_2"
+        account_id = "Account_ID"
     elif account_number == '3':
-        account_id = "YOUR_ACCOUNT_ID_3"
+        account_id = "Account_ID"
     elif account_number == '4':
-        account_id = "YOUR_ACCOUNT_ID_4"  # Cartão de crédito Santander
+        account_id = "Account_ID"  
     elif account_number == '5':
-        account_id = "YOUR_ACCOUNT_ID_5"  # Extrato Santander
+        account_id = "Account_ID"   
     else:
         return jsonify({"error": "Invalid account number"}), 400
 
@@ -89,52 +87,69 @@ def transactions(account_number):
         return jsonify({"error": str(e)}), 500
 
 def analyze_expenses_with_ai(transactions):
-    """Analyzes expenses using Google Gemini AI."""
+    """Analyzes expenses by grouping them based on the provided category."""
     if not transactions:
         return {"error": "No transactions to analyze."}
 
-    prompt = f"""Analise a seguinte lista de transações financeiras e categorize cada despesa por tipo, utilizando categorias em português do Brasil (por exemplo: Alimentação, Transporte, Moradia, Lazer, etc.).
+    categorized_expenses = {}
+    recurring_expenses = []
+    unique_expenses = []
+    essential_expenses = []
+    superfluous_expenses = []
 
-    Para cada categoria identificada, calcule o total gasto.
+    # Track expense counts for identifying recurring expenses
+    expense_counts = {}
 
-    Considere que o gasto com a descrição "Pagamento de contas Itaú Unibanco S.A" no valor de 1800.00 é o aluguel.
+    # Mapping of general categories to determine essential/superfluous (can be expanded)
+    essential_categories_keywords = ["salary", "rent", "utilities", "healthcare", "government aid", "taxes", "alimony", "insurance", "education"]
+    superfluous_categories_keywords = ["leisure", "gambling", "shopping", "digital services", "travel"]
 
-    Considere pagamentos de fatura como gastos essenciais.
+    for transaction in transactions:
+        if transaction['type'] == 'DEBIT':
+            category = transaction.get('category', 'Uncategorized')
+            amount = abs(transaction.get('amount', 0))
+            description = transaction.get('description')
 
-    Identifique gastos recorrentes e gastos únicos.
-    Identifique gastos essenciais e gastos supérfluos.
+            # Categorize expenses
+            if category not in categorized_expenses:
+                categorized_expenses[category] = {"expenses": [], "total_spent": 0}
+            categorized_expenses[category]["expenses"].append({
+                "description": description,
+                "amount": amount
+            })
+            categorized_expenses[category]["total_spent"] += amount
 
-    Formate a resposta como um objeto JSON válido, sem formatação extra ou backticks. Inclua as seguintes chaves:
-    'categorized_expenses' (um dicionário onde as chaves são as categorias em português do Brasil e os valores são objetos contendo uma lista de despesas sob a chave 'expenses', cada despesa com 'description' e 'amount'. Inclua também uma chave 'total_spent' com o valor total gasto nesta categoria),
-    'recurring_expenses' (lista de objetos com 'category' em português do Brasil e 'amount'),
-    'unique_expenses' (lista de objetos com 'category' em português do Brasil e 'amount'),
-    'essential_expenses' (lista de objetos com 'category' em português do Brasil e 'amount'),
-    'superfluous_expenses' (lista de objetos com 'category' em português do Brasil e 'amount').
+            # Count expense occurrences for recurring logic
+            expense_counts[description] = expense_counts.get(description, 0) + 1
 
-    Certifique-se de que cada despesa inclua o valor ('amount').
-    """
-    prompt += f"\nTransações:\n{json.dumps(transactions)}"
+            # Identify essential and superfluous expenses based on category keywords
+            category_lower = category.lower()
+            is_essential = any(keyword in category_lower for keyword in essential_categories_keywords)
+            is_superfluous = any(keyword in category_lower for keyword in superfluous_categories_keywords)
 
-    model = genai.GenerativeModel("gemini-1.5-flash")
-    try:
-        response = model.generate_content(prompt)
-        try:
-            start_index = response.text.find('{')
-            end_index = response.text.rfind('}')
-            if start_index != -1 and end_index != -1 and start_index < end_index:
-                json_string = response.text[start_index : end_index + 1]
-                json_response = json.loads(json_string)
-                return json_response
-            else:
-                print(f"Could not find valid JSON in AI response: {response.text}")
-                return {"error": "Could not extract valid JSON from AI response."}
-        except json.JSONDecodeError as e:
-            print(f"Error parsing JSON: {e}. Raw text:")
-            print(response.text)
-            return {"error": "Error parsing AI response.", "raw_text": response.text}
-    except Exception as e:
-        print(f"Error in Gemini API call: {e}")
-        return {"error": "Error analyzing expenses with AI."}
+            if is_essential:
+                essential_expenses.append({"category": category, "amount": amount, "description": description})
+            elif is_superfluous:
+                superfluous_expenses.append({"category": category, "amount": amount, "description": description})
+
+    # Identify recurring and unique expenses based on counts
+    for transaction in transactions:
+        if transaction['type'] == 'DEBIT':
+            description = transaction.get('description')
+            amount = abs(transaction.get('amount', 0))
+            category = transaction.get('category', 'Uncategorized')
+            if expense_counts[description] > 1 and not any(exp['description'] == description for exp in recurring_expenses):
+                recurring_expenses.append({"category": category, "amount": amount, "description": description})
+            elif expense_counts[description] == 1 and not any(exp['description'] == description for exp in unique_expenses):
+                unique_expenses.append({"category": category, "amount": amount, "description": description})
+
+    return {
+        "categorized_expenses": categorized_expenses,
+        "recurring_expenses": recurring_expenses,
+        "unique_expenses": unique_expenses,
+        "essential_expenses": essential_expenses,
+        "superfluous_expenses": superfluous_expenses
+    }
 
 def suggest_savings_with_ai(transactions, current_balance):
     """Suggests savings based on transaction history using Google Gemini AI."""
