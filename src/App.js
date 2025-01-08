@@ -1,4 +1,4 @@
-
+// --- START OF FILE App.js ---
 // Frontend (React - em src/App.js)
 import React, { useState, useEffect } from 'react';
 import styled, { createGlobalStyle, ThemeProvider } from 'styled-components';
@@ -132,19 +132,43 @@ function App() {
   const [transactions1, setTransactions1] = useState([]);
   const [transactions2, setTransactions2] = useState([]);
   const [transactions3, setTransactions3] = useState([]);
-  const [transactions4, setTransactions4] = useState([]); 
-  const [transactions5, setTransactions5] = useState([]); 
+  const [transactions4, setTransactions4] = useState([]); // New state for Cartão de crédito Santander
+  const [transactions5, setTransactions5] = useState([]); // New state for Extrato Santander
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [timeRange, setTimeRange] = useState('1');
   const [showTransactions1, setShowTransactions1] = useState(true);
   const [showTransactions2, setShowTransactions2] = useState(true);
   const [showTransactions3, setShowTransactions3] = useState(true);
-  const [showTransactions4, setShowTransactions4] = useState(true); 
-  const [showTransactions5, setShowTransactions5] = useState(true); 
+  const [showTransactions4, setShowTransactions4] = useState(true); // New toggle state
+  const [showTransactions5, setShowTransactions5] = useState(true); // New toggle state
   const [aiAnalysis, setAiAnalysis] = useState(null);
   const [savingsSuggestions, setSavingsSuggestions] = useState(null);
   const [categorySpendingData, setCategorySpendingData] = useState(null);
+
+  useEffect(() => {
+    console.log("Valor de timeRange:", timeRange);
+  }, [timeRange]);
+
+  useEffect(() => {
+    console.log("Estado de transactions1:", transactions1);
+  }, [transactions1]);
+
+  useEffect(() => {
+    console.log("Estado de transactions2:", transactions2);
+  }, [transactions2]);
+
+  useEffect(() => {
+    console.log("Estado de transactions3:", transactions3);
+  }, [transactions3]);
+
+  useEffect(() => {
+    console.log("Estado de transactions4:", transactions4);
+  }, [transactions4]);
+
+  useEffect(() => {
+    console.log("Estado de transactions5:", transactions5);
+  }, [transactions5]);
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -204,8 +228,8 @@ function App() {
     if (account === 1) setShowTransactions1(!showTransactions1);
     if (account === 2) setShowTransactions2(!showTransactions2);
     if (account === 3) setShowTransactions3(!showTransactions3);
-    if (account === 4) setShowTransactions4(!showTransactions4);
-    if (account === 5) setShowTransactions5(!showTransactions5); 
+    if (account === 4) setShowTransactions4(!showTransactions4); // Toggle for new source
+    if (account === 5) setShowTransactions5(!showTransactions5); // Toggle for new source
   };
 
   const handleAnalyzeWithAI = async () => {
@@ -219,11 +243,11 @@ function App() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ transactions1, transactions2, transactions3, transactions4, transactions5 }), 
+        body: JSON.stringify({ transactions1, transactions2, transactions3, transactions4, transactions5 }), // Include new transactions
       });
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(`Erro ao analisar transações com IA: ${response.status} ${response.statusText} - ${errorData.error}`);
+        throw new Error(`Categorizar transações: ${response.status} ${response.statusText} - ${errorData.error}`);
       }
       const data = await response.json();
       setAiAnalysis(data);
@@ -275,7 +299,7 @@ function App() {
         return acc + (transaction.type === 'CREDIT' ? transaction.amount : -transaction.amount);
       }, 0);
     };
-    const currentBalance = calculateBalance([...transactions1, ...transactions2, ...transactions3, ...transactions4, ...transactions5]);
+    const currentBalance = calculateBalance([...transactions1, ...transactions2, ...transactions3, ...transactions4, ...transactions5]); // Include new transactions
 
     try {
       const response = await fetch('http://127.0.0.1:5000/api/suggest-savings-ai', {
@@ -283,7 +307,7 @@ function App() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ transactions1, transactions2, transactions3, transactions4, transactions5, currentBalance }),
+        body: JSON.stringify({ transactions1, transactions2, transactions3, transactions4, transactions5, currentBalance }), // Include new transactions
       });
       if (!response.ok) {
         const errorData = await response.json();
@@ -460,7 +484,7 @@ function App() {
         )}
 
         <div>
-          <SectionTitle>Inter Débito</SectionTitle>
+          <SectionTitle>Rename</SectionTitle>
           <ToggleButton onClick={() => toggleTransactions(1)}>
             {showTransactions1 ? <FaEyeSlash /> : <FaEye />} Transações Conta 1
           </ToggleButton>
@@ -468,7 +492,7 @@ function App() {
         </div>
 
         <div>
-          <SectionTitle>Inter Crédito</SectionTitle>
+          <SectionTitle>Rename</SectionTitle>
           <ToggleButton onClick={() => toggleTransactions(2)}>
             {showTransactions2 ? <FaEyeSlash /> : <FaEye />} Transações Conta 2
           </ToggleButton>
@@ -476,7 +500,7 @@ function App() {
         </div>
 
         <div>
-          <SectionTitle>Mercado Pago</SectionTitle>
+          <SectionTitle>Rename</SectionTitle>
           <ToggleButton onClick={() => toggleTransactions(3)}>
             {showTransactions3 ? <FaEyeSlash /> : <FaEye />} Transações Conta 3
           </ToggleButton>
@@ -484,7 +508,7 @@ function App() {
         </div>
 
         <div>
-          <SectionTitle>Cartão de crédito Santander</SectionTitle>
+          <SectionTitle>Rename</SectionTitle>
           <ToggleButton onClick={() => toggleTransactions(4)}>
             {showTransactions4 ? <FaEyeSlash /> : <FaEye />} Transações Cartão Santander
           </ToggleButton>
@@ -492,7 +516,7 @@ function App() {
         </div>
 
         <div>
-          <SectionTitle>Extrato Santander</SectionTitle>
+          <SectionTitle>Rename</SectionTitle>
           <ToggleButton onClick={() => toggleTransactions(5)}>
             {showTransactions5 ? <FaEyeSlash /> : <FaEye />} Transações Extrato Santander
           </ToggleButton>
@@ -504,3 +528,4 @@ function App() {
 }
 
 export default App;
+// --- END OF FILE App.js ---
