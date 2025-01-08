@@ -21,7 +21,7 @@ Before you begin, ensure you have the following installed:
 
 1. **Clone the repository:**
     ```bash
-    git clone <your_repository_url>
+    git clone <[your_repository_url](https://github.com/gustavo0070000/AjeitoFinanceiro.git)>
     cd <your_repository_directory>
     ```
 
