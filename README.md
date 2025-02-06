@@ -40,7 +40,7 @@ Before you begin, ensure you have the following installed:
     ```
 
 5. **Set up environment variables:**
-    *   Create a `.env` file in the same directory as `Ajeito-Financeiro_flask.py`.
+    *   Create a `.env` file in the same directory as `app.py`.
     *   Add your Google Gemini API key, Pluggy Client ID, and Pluggy Client Secret to the `.env` file:
         ```env
         GOOGLE_API_KEY="YOUR_GOOGLE_GEMINI_API_KEY"
